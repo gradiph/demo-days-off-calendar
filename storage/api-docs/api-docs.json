@@ -1,0 +1,126 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Demo Days Off Calendar API Documentation",
+        "description": "API Documentation for Demo Days Off Calendar using Swagger",
+        "contact": {
+            "email": "gradiph@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/calendar": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Get Calendar",
+                "description": "Get Calendar Data",
+                "operationId": "calendar",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "name": "Test User",
+                                    "email": "test@example.com",
+                                    "email_verified_at": "2025-05-30T04:30:21.000000Z",
+                                    "created_at": "2025-05-30T04:30:21.000000Z",
+                                    "updated_at": "2025-05-30T04:30:21.000000Z",
+                                    "offdays": [
+                                        {
+                                            "id": 1,
+                                            "user_id": 1,
+                                            "date": "2025-05-23",
+                                            "reason": "Beatae omnis optio dolor minus occaecati dolor.",
+                                            "created_at": "2025-05-30T04:30:21.000000Z",
+                                            "updated_at": "2025-05-30T04:30:21.000000Z"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "description": "Login",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "token_name"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "default": "test@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "default": "password"
+                                    },
+                                    "token_name": {
+                                        "type": "string",
+                                        "default": "swagger"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "token": "1|5AujuSJSp03eIQNee0ZkyqxiSBBfGIO5RgpAG8Bc227437f5"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authentication related endpoints"
+        },
+        {
+            "name": "Calendar",
+            "description": "Calendar related endpoints"
+        }
+    ]
+}
