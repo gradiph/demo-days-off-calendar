@@ -9,4 +9,9 @@ class UserOffDay extends Model
 {
     /** @use HasFactory<\Database\Factories\UserOffDayFactory> */
     use HasFactory;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

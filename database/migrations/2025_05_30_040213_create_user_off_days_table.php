@@ -19,6 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->date('date');
             $table->string('reason', length: 64);
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });
     }
