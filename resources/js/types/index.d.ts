@@ -3,6 +3,7 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
+    offdays?: OffDay[];
 }
 
 export type PageProps<

@@ -49,7 +49,7 @@ const showingNavigationDropdown = ref(false);
                                     :href="route('calendar')"
                                     :active="route().current('calendar')"
                                 >
-                                    Calendar
+                                    My Days Off Calendar
                                 </NavLink>
                             </div>
                         </div>
