@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserOffDay;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -17,7 +15,7 @@ class CalendarController extends Controller
         $user->load('offdays');
 
         return Inertia::render('Calendar', [
-          'user' => $user,
+            'user' => $user,
         ]);
     }
 }
