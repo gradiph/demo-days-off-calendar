@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Calendar;
 
+use App\Rules\UniqueOffDay;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class NewDaysOffRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class NewDaysOffRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->input('userId') === Auth::id();
     }
 
     /**
@@ -22,7 +24,10 @@ class NewDaysOffRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'newOffDays' => ['required', 'array'],
+            'newOffDays.*' => ['required', 'date', new UniqueOffDay],
+            'userId' => ['required', 'exists:users,id'],
+            'reason' => ['required', 'string', 'max:64'],
         ];
     }
 }

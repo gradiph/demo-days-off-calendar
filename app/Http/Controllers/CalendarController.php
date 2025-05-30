@@ -27,11 +27,13 @@ class CalendarController extends Controller
         $user = Auth::user();
 
         $batchData = [];
-        foreach ($request->newOffDays as $new_date) {
+        foreach ($request->newOffDays as $newDate) {
             array_push($batchData, [
                 'user_id' => $user->id,
-                'date' => $new_date,
+                'date' => $newDate,
                 'reason' => $request->reason,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
         UserOffDay::insert($batchData);

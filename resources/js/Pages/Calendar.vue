@@ -19,9 +19,11 @@ const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const currentMonth = ref(dayjs())
 const form = reactive<{
+    userId: number;
     reason: string;
     newOffDays: string[]
 }>({
+    userId: props.user.id,
     reason: '',
     newOffDays: []
 })
@@ -83,11 +85,13 @@ async function submit() {
     console.log('reason', form.reason)
     router.post('/calendar', form, {
         onSuccess: () => {
-            isShowModal.value = false
             form.newOffDays = []
         },
         onError: (errors) => {
             console.log('errors', errors)
+        },
+        onFinish: () => {
+            isShowModal.value = false
         },
         preserveScroll: true,
     })
