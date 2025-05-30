@@ -23,6 +23,7 @@ class UserOffDayFactory extends Factory
             'user_id' => $user->id,
             'date' => fake()->dateTimeBetween(startDate: '-1 week', endDate: '+1 month'),
             'reason' => fake()->sentence(),
+            'approved_at' => fake()->optional(weight: 0.2)->dateTime(now()),
         ];
     }
 }

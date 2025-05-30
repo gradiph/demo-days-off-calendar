@@ -25,7 +25,7 @@ class NewDaysOffRequest extends FormRequest
     {
         return [
             'newOffDays' => ['required', 'array'],
-            'newOffDays.*' => ['required', 'date', new UniqueOffDay],
+            'newOffDays.*' => ['required', 'date', new UniqueOffDay, 'after:today'],
             'userId' => ['required', 'exists:users,id'],
             'reason' => ['required', 'string', 'max:64'],
         ];
