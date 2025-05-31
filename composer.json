@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "gradiph/demo-days-off-calendar",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Demo application of Days Off Calendar.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
