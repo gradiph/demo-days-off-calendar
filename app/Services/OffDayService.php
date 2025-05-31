@@ -3,23 +3,24 @@
 namespace App\Services;
 
 use App\Models\UserOffDay;
+use Illuminate\Support\Collection;
 
 class OffDayService
 {
-  public function getAllOffDaysOfUser($userId)
+  public function getAllOffDaysOfUser(int $userId): Collection
   {
     return UserOffDay::where('user_id', $userId)
       ->get();
   }
 
-  public function getAllOffDaysByDate($date)
+  public function getAllOffDaysByDate(string $date): Collection
   {
     return UserOffDay::where('date', $date)
       ->with('user')
       ->get();
   }
 
-  public function batchInsert($data)
+  public function batchInsert(array $data)
   {
     $batchData = [];
     foreach ($data['newOffDays'] as $date) {

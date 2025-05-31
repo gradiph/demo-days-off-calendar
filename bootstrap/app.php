@@ -1,5 +1,8 @@
 <?php
 
+use App\Console\Commands\DispatchSlackStatusUpdate;
+use App\Jobs\UpdateSlackStatus;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
         //
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->call(new DispatchSlackStatusUpdate)->everyMinute();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

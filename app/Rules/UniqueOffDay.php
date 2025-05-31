@@ -16,10 +16,6 @@ class UniqueOffDay implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        Log::info('validation start', [
-            'attribute' => $attribute,
-            'value' => $value
-        ]);
         /** @var \App\Models\User */
         $user = Auth::user();
         $isExist = $user->offdays()
