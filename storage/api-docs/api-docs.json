@@ -14,9 +14,9 @@
                 "tags": [
                     "Calendar"
                 ],
-                "summary": "Get Calendar",
-                "description": "Get Calendar Data",
-                "operationId": "calendar",
+                "summary": "Get Calendar for Authenticated User",
+                "description": "Get calendar data for authenticated user",
+                "operationId": "calendar.self",
                 "responses": {
                     "200": {
                         "description": "Ok",
@@ -24,20 +24,174 @@
                             "application/json": {
                                 "schema": {},
                                 "example": {
-                                    "id": 1,
-                                    "name": "Test User",
-                                    "email": "test@example.com",
-                                    "email_verified_at": "2025-05-30T04:30:21.000000Z",
-                                    "created_at": "2025-05-30T04:30:21.000000Z",
-                                    "updated_at": "2025-05-30T04:30:21.000000Z",
-                                    "offdays": [
+                                    "data": [
                                         {
-                                            "id": 1,
-                                            "user_id": 1,
+                                            "date": "2025-06-17",
+                                            "reason": "Odio quibusdam suscipit nemo repellendus fugit.",
+                                            "approvedAt": null
+                                        },
+                                        {
                                             "date": "2025-05-23",
                                             "reason": "Beatae omnis optio dolor minus occaecati dolor.",
-                                            "created_at": "2025-05-30T04:30:21.000000Z",
-                                            "updated_at": "2025-05-30T04:30:21.000000Z"
+                                            "approvedAt": "2025-05-31 00:11:09"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Create New Days Off",
+                "description": "Create New Days Off",
+                "operationId": "calendar.create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "newOffDays",
+                                    "userId",
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "newOffDays": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "default": "2025-06-17"
+                                        }
+                                    },
+                                    "userId": {
+                                        "type": "number",
+                                        "default": "1"
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "default": "Lorem ipsum"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": []
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/calendar/{user_id}": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Get Calendar for Specific User",
+                "description": "Get calendar data for requested user",
+                "operationId": "calendar.user",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "default": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "data": [
+                                        {
+                                            "date": "2025-06-17",
+                                            "reason": "Odio quibusdam suscipit nemo repellendus fugit.",
+                                            "approvedAt": null
+                                        },
+                                        {
+                                            "date": "2025-05-23",
+                                            "reason": "Beatae omnis optio dolor minus occaecati dolor.",
+                                            "approvedAt": "2025-05-31 00:11:09"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/calendar/{date}": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Get Calendar for Spesific Date",
+                "description": "Get calendar data for a date",
+                "operationId": "calendar.date",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Date in YYYY-MM-DD format",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "2025-05-31"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "data": [
+                                        {
+                                            "name": "Test User",
+                                            "reason": "Odio quibusdam suscipit nemo repellendus fugit.",
+                                            "approvedAt": null
+                                        },
+                                        {
+                                            "name": "Test User",
+                                            "reason": "Beatae omnis optio dolor minus occaecati dolor.",
+                                            "approvedAt": "2025-05-31 00:11:09"
                                         }
                                     ]
                                 }
