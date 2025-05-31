@@ -2,12 +2,13 @@
 import Modal from '@/Components/Modal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { User } from '@/types';
-import { OffDay } from '@/types/calendar';
 import { Head, router } from '@inertiajs/vue3';
 import dayjs, { Dayjs } from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import isToday from 'dayjs/plugin/isToday'
+import Swal from 'sweetalert2'
 import { computed, reactive, ref } from 'vue'
+
 dayjs.extend(isToday)
 dayjs.extend(advancedFormat)
 
@@ -29,6 +30,7 @@ const form = reactive<{
 })
 const isShowModal = ref(false)
 
+const isShowSubmitButton = computed(() => form.newOffDays.length > 0)
 const startOfMonth = computed(() => currentMonth.value.startOf('month'))
 const endOfMonth = computed(() => currentMonth.value.endOf('month'))
 const calendarDays = computed(() => {
@@ -58,21 +60,30 @@ function nextMonth() {
     currentMonth.value = currentMonth.value.add(1, 'month')
 }
 
-function isDayOff(date: Dayjs) {
-    return props.user.offdays?.some((day) => day.date === date.format('YYYY-MM-DD')) || false
+function isApprovedDayOff(date: Dayjs) {
+    return props.user.offdays?.some((day) => (day.date === date.format('YYYY-MM-DD') && day.approved_at) || false)
+}
+
+function isWaitingDayOff(date: Dayjs) {
+    return props.user.offdays?.some((day) => (day.date === date.format('YYYY-MM-DD') && !day.approved_at) || false)
 }
 
 function isNewDayOff(date: Dayjs) {
     return form.newOffDays.some((day) => day === date.format('YYYY-MM-DD')) || false
 }
 
+function isPassedDay(date: Dayjs) {
+    return date.isBefore(dayjs())
+}
+
 function selectDay(date: Dayjs) {
+    if (isPassedDay(date) || isApprovedDayOff(date) || isWaitingDayOff(date)) return
+
     if (form.newOffDays.some((day) => day === date.format('YYYY-MM-DD'))) {
         form.newOffDays = form.newOffDays.filter((day) => day != date.format('YYYY-MM-DD'))
     } else {
         form.newOffDays.push(date.format('YYYY-MM-DD'))
     }
-    console.log('form.newOffDays', form.newOffDays)
 }
 
 function openConfirmation() {
@@ -81,20 +92,30 @@ function openConfirmation() {
 }
 
 async function submit() {
-    console.log('form.newOffDays', form.newOffDays)
-    console.log('reason', form.reason)
     router.post('/calendar', form, {
         onSuccess: () => {
             form.newOffDays = []
         },
         onError: (errors) => {
-            console.log('errors', errors)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: getFirstErrorMessage(errors),
+                toast: true,
+                timer: 3000,
+                timerProgressBar: true,
+                position: 'top-right',
+            })
         },
         onFinish: () => {
             isShowModal.value = false
         },
         preserveScroll: true,
     })
+}
+
+function getFirstErrorMessage(errors: object) {
+    return Object.values(errors).flat()[0] ?? null;
 }
 </script>
 
@@ -125,18 +146,23 @@ async function submit() {
 
                 <div class="grid grid-cols-7 gap-2 mt-2">
                     <div v-for="(day, index) in calendarDays" :key="index"
-                        class="h-12 flex items-center justify-center rounded hover:bg-blue-100 cursor-pointer" :class="{
+                        class="h-12 flex items-center justify-center rounded" :class="{
                             'text-gray-400': !day.isCurrentMonth,
                             'font-bold text-blue-700': day.isToday,
-                            'bg-blue-100': isDayOff(day.date),
-                            'bg-green-200': isNewDayOff(day.date),
+                            'bg-blue-100': isWaitingDayOff(day.date),
+                            'bg-green-500': isApprovedDayOff(day.date),
+                            'bg-green-200 hover:bg-green-200': isNewDayOff(day.date),
+                            'cursor-pointer hover:bg-blue-100': !isPassedDay(day.date) && !isApprovedDayOff(day.date),
                         }" @click="selectDay(day.date)">
                         {{ day.date.date() }}
                     </div>
                 </div>
             </div>
+        </div>
 
-            <button :v-if="form.newOffDays.length > 0" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" @click="openConfirmation">
+        <div class="text-center">
+            <button v-show="isShowSubmitButton" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                @click="openConfirmation">
                 Submit Selected Dates
             </button>
         </div>
@@ -151,7 +177,8 @@ async function submit() {
                     </li>
                 </ol>
                 <p class="mb-2">Please provide a reason before proceeding:</p>
-                <textarea v-model="form.reason" class="w-full border rounded p-2" placeholder="Enter your reason..." maxlength="64"></textarea>
+                <textarea v-model="form.reason" class="w-full border rounded p-2" placeholder="Enter your reason..."
+                    maxlength="64"></textarea>
 
                 <div class="flex justify-end gap-2 mt-4">
                     <button class="px-4 py-2 text-gray-600" @click="isShowModal = false">Cancel</button>
